@@ -35,7 +35,7 @@ type words =
     | Word of string
 
 let noun_file = filelines "nounlist.txt"
-let verb_file = filelines "31k verbs.txt"
+let verb_file = filelines "31kverbs.txt"
 let adjective_file = filelines "commonadjectives.txt"
 
 let replacer = function
