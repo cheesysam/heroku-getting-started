@@ -21,6 +21,43 @@ open Suave.Operators
 
 printfn "initializing script..."
 
+let random_object = System.Random()
+
+let filelines filename = System.IO.File.ReadLines(__SOURCE_DIRECTORY__ + "/" + filename)
+
+let get_random_line file = random_object.Next(0, Seq.length(file))
+let get_random_word word_file = Seq.item (get_random_line word_file) (word_file)
+
+type words =
+    | Verb
+    | Noun
+    | Adjective
+    | Word of string
+
+let noun_file = filelines "nounlist.txt"
+let verb_file = filelines "31k verbs.txt"
+let adjective_file = filelines "commonadjectives.txt"
+
+let replacer = function
+    | Verb -> get_random_word verb_file
+    | Noun -> get_random_word noun_file
+    | Adjective -> get_random_word adjective_file
+    | Word(word) -> word
+
+let output_list input = List.map replacer input
+let folded_list list = list |> List.fold (+) ""
+let get_output_string = output_list >> folded_list
+
+let config = 
+    let port = System.Environment.GetEnvironmentVariable("PORT")
+    let ip127  = IPAddress.Parse("127.0.0.1")
+    let ipZero = IPAddress.Parse("0.0.0.0")
+
+    { defaultConfig with 
+        logger = Logging.Loggers.saneDefaultsFor Logging.LogLevel.Verbose
+        bindings=[ (if port = null then HttpBinding.mk HTTP ip127 (uint16 8080)
+                    else HttpBinding.mk HTTP ipZero (uint16 port)) ] }
+
 let species = 
   [("Plant (tree)", "Baishan Fir"); ("Insect (butterfly)", "");
    ("Reptile", "Leaf scaled sea-snake");
