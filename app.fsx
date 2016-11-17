@@ -23,7 +23,7 @@ printfn "initializing script..."
 
 let random_object = System.Random()
 
-let filelines filename = System.IO.File.ReadLines(__SOURCE_DIRECTORY__ + "/" + filename)
+let filelines filename = System.IO.File.ReadLines(filename)
 
 let get_random_line file = random_object.Next(0, Seq.length(file))
 let get_random_word word_file = Seq.item (get_random_line word_file) (word_file)
